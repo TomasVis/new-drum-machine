@@ -30,32 +30,55 @@ class App extends React.Component {
 
       ],
       keys:["Q", "W", "E", "A", "S", "D", "Z", "X", "C"],
-      description:["bright-stab","housepunch","kickcrash","lowkickcrash","mr-brown-punch","rubabend","thick-punch","bass-rhodes-punch","chhclap"]
+      description:["bright-stab","housepunch","kickcrash","lowkickcrash","mr-brown-punch","rubabend","thick-punch","bass-rhodes-punch","chhclap"],
+      displayElement: "Nothing"
     }
 
   }
+
+
     handleKeyPress = (event) => {
-     // console.log(event.key)
+      console.log(this)
       if(/[QWEASDZXC]/.test(event.key.toUpperCase()) ){
         let sound = document.getElementById(event.key.toUpperCase());
         sound.currentTime = 0;
         sound.play();
+        console.log(sound.className)
+        this.setState({
+          displayElement:sound.className
+        })
       }
       
 }
-
+componentDidUpdate(){
+  console.log(this.state.displayelement)
+}
+handleClickevent =(name,id) =>{
+  console.log(id)
+  let sound = document.getElementById(name);
+    sound.currentTime = 0;
+    sound.play();
+    this.setState({
+          displayElement:id
+        })
+}
  
   render(){
     return (<div tabIndex="1" id="drum-machine" onKeyPress={this.handleKeyPress} > 
-      <div id="display">{}</div>
+      <h1 id="display">{this.state.displayElement}</h1>
       {this.state.keys.map((val,index) =>
-              <Button key={val}  id={this.state.description[index]} source={this.state.urls[index]} name={val}/> 
+              <Button click= {this.handleClickevent} key={val}  id={this.state.description[index]} source={this.state.urls[index]} name={val}/> 
             )}
       
       
     </div>);
   }
 }
+
+
+
+
+
 class Button extends React.Component {
   constructor(props){
     super(props);
@@ -64,20 +87,23 @@ class Button extends React.Component {
   }
 
 
-  handleClick(id){
+  handleClick(name,id){
     console.log("clickity from child "+this.props.name)
-    const sound = document.getElementById(this.props.name);
-    sound.currentTime = 0;
-    sound.play();
+    
+    this.props.click(this.props.name,this.props.id)
   }
 
  
 render(){
-  console.log(this.props)
+  //console.log(this.props)
   return (<div> 
     
-  <audio preload="auto" id ={this.props.name} src={this.props.source}> </audio>   
-    <button  className="drum-pad" onClick={this.handleClick} id ={this.props.id}>{this.props.name}</button>
+    
+    <button  className="drum-pad" onClick={this.handleClick} id ={this.props.id}>{this.props.name}
+      <audio className="clip" preload="auto" id ={this.props.name} src={this.props.source}> </audio> 
+    </button>
+
+
   </div>);
 }
 }
